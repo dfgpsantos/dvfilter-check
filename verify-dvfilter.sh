@@ -1,6 +1,8 @@
 #!/bin/bash
 
-rm -rf dfwconfig.txt
+SERVIDORNOME=`hostname`
+
+rm -f dfwconfig-$SERVIDORNOME.txt
 
 summarize-dvfilter | grep "port 6" | grep -v vmk  | cut -f4 -d" " > dvfilter-vm.txt
 
@@ -14,15 +16,15 @@ do
 VMNAMEPORT=`echo $DVFILTERLINE | cut -f1 -d","`
 VMNAMEPORTFILTER=`tail -n 1 dvfilter-filter.txt | cut -f1 -d","`
 
-echo "" >> dfwconfig.txt
-echo "getting dvFilter config for $VMNAMEPORT" >> dfwconfig.txt
-echo "" >> dfwconfig.txt
-vsipioctl getaddrsets -f $VMNAMEPORTFILTER >> dfwconfig.txt
-vsipioctl getrules -f $VMNAMEPORTFILTER >> dfwconfig.txt
+echo "" >> dfwconfig-$SERVIDORNOME.txt
+echo "getting dvFilter config for $VMNAMEPORT" >> dfwconfig-$SERVIDORNOME.txt
+echo "" >> dfwconfig-$SERVIDORNOME.txt
+vsipioctl getaddrsets -f $VMNAMEPORTFILTER >> dfwconfig-$SERVIDORNOME.txt
+vsipioctl getrules -f $VMNAMEPORTFILTER >> dfwconfig-$SERVIDORNOME.txt
 
 sed -i -e '1d' dvfilter-filter.txt
 
 done
 
-rm -rf  dvfilter-filter.txt
-rm -rf dvfilter-vm.txt
+rm -f  dvfilter-filter.txt
+rm -f dvfilter-vm.txt
